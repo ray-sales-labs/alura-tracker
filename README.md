@@ -1,5 +1,6 @@
 # alura-tracker
 <<<<<<< HEAD
+<<<<<<< HEAD
 Projeto desenvolvido no curso de vue 3 da alura
 =======
 
@@ -26,3 +27,6 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 >>>>>>> b186799 (init)
+=======
+Projeto desenvolvido no curso de vue 3 da alura
+>>>>>>> 42fddfe (Initial commit)
