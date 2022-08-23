@@ -22,10 +22,6 @@
     padding: 1rem;
   }
 
-  header h1 img {
-    width: 100%;
-  }
-
   @media only screen and (max-width: 768px) {
     header {
       padding: 2.5rem;
