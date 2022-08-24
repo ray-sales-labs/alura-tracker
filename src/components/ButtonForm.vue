@@ -1,6 +1,6 @@
 <template>
     <button class="button" @click="clicked" :disabled="disabled">
-      <span class="icon">
+      <span v-if="icon" class="icon">
         <i :class="icon">
         
         </i>
