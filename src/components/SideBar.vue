@@ -3,7 +3,7 @@
     <h1>
       <img src="../assets/logo.png" alt="Logo Alura Tracker">
     </h1>
-    <ButtonForm :label="statusButton" @clicked="changeTheme" />
+    <ButtonForm :label="statusButton" @clicked="changeTheme" :icon="darkModeActive ? 'fa-regular fa-lightbulb' : 'fa-solid fa-lightbulb'"/>
   </header>
 </template>
 
@@ -36,7 +36,7 @@ import ButtonForm from './ButtonForm.vue';
 
 <style scoped>
   header {
-    background: #0d3b66;
+    background: #8F5394;
     width: 100%;
     height: 100vh;
     padding: 1rem;
