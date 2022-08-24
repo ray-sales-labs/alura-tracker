@@ -1,25 +1,26 @@
 <template>
-  <div class="box has-text-weight-bold">
-    <div class="columns">
-      <div class="column is-7">
-        {{ description }}
-      </div>
-      <div class="column">
-        <StopWatch :timeInSeconds="secondsDuration" />
-      </div>
+ <TaskBox>
+  <div class="columns">
+    <div class="column is-7">
+      {{ task.description || 'Task without description' }}
+    </div>
+    <div class="column">
+      <StopWatch :timeInSeconds="task.secondsDuration" />
     </div>
   </div>
+ </TaskBox>
 </template>
 
 <script lang="ts">
   import { defineComponent, PropType } from 'vue'
   import StopWatch from './StopWatch.vue'
-  import ITaskItem from './interfaces/ITaskItem'
-
+  import ITaskItem from '../interfaces/ITaskItem'
+  import TaskBox from './TaskBox.vue'
   export default defineComponent({
     name: 'TaskItem',
     components: {
-      StopWatch
+      StopWatch,
+      TaskBox
     },
     props: {
       task: {
@@ -31,7 +32,5 @@
 </script>
 
 <style scoped>
-  .box {
-    background: #FAF0CA;
-  }
+
 </style>
