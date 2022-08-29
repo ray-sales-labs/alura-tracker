@@ -16,8 +16,29 @@
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue'
-
+  import IProjectItem from '../interfaces/IProjectItem'
   export default defineComponent({
-    name: 'ProjectsView'
+    name: 'ProjectsView',
+    data(){
+      return {
+        projectName: '',
+        projects: [] as IProjectItem[]
+      }
+    },
+    methods: {
+      save() {
+        const project: IProjectItem = {
+          name: this.projectName,
+          id: new Date().toISOString()
+        }
+        this.projects.push(project)
+        this.projectName = ''
+      }
+    }
   })
 </script>
+<style scoped>
+  .projects {
+    padding: 1.25rem;
+  }
+</style>
