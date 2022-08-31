@@ -20,7 +20,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import StopWatch from './StopWatch.vue'
-import ButtonForm from './ButtonForm.vue'
+  import ButtonForm from './ButtonForm.vue'
 
   export default defineComponent({
     name: 'TaskTimer',

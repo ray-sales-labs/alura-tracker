@@ -38,3 +38,8 @@
     }
   })
 </script>
+<style scoped>
+  .button {
+    border: none;
+  }
+</style>

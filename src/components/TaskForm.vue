@@ -1,13 +1,23 @@
 <template>
   <div class="box form">
     <div class="columns">
-      <div class="column is-8" role="form" aria-label="formulário para criação de uma nova tarefa">
+      <div class="column is-5" role="form" aria-label="formulário para criação de uma nova tarefa">
         <input 
           type="text"
           class="input"
           placeholder="Qual tarefa você deseja iniciar?"
           v-model="description"
           >
+      </div>
+      <div class="column is-3">
+        <div class="select">
+          <select v-model="projectID">
+            <option value="">Selecione o projeto</option>
+            <option :value="project.id" v-for="project in projects" :key="project.id">
+              {{ project.name }}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="column">
         <TaskTimer @finished="finishTask" />
@@ -17,29 +27,41 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue'
+  import { key } from '@/store'
+import { ADD_TASK } from '@/store/mutations_type'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
   import TaskTimer from './TaskTimer.vue'
 
   export default defineComponent({
     name: 'TaskForm',
-    emits: ['OnSaveTask'],
     components: {
       TaskTimer
     },
     data () {
       return {
-        description: ''
+        description: '',
+        projectID: '',
       }
     },
     methods: {
       finishTask(elapsedTime: number) : void {
-        this.$emit('OnSaveTask', {
+        this.store.commit(ADD_TASK, {
           secondsDuration: elapsedTime,
-          description: this.description
+          description: this.description,
+          project: this.projects.find(project => project.id == this.projectID)
         })
+
         this.description = ''
       }
     },
+    setup() {
+      const store = useStore(key)
+      return {
+        store,
+        projects: computed(() => store.state.projects)
+      }
+    }
   })
 </script>
 
