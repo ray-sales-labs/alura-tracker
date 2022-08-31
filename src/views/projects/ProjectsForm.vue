@@ -1,5 +1,5 @@
 <template>
-  <section class="projects">
+  <section>
     <form @submit.prevent="save">
       <div class="field">
         <label for="projectName" class="label">
@@ -16,6 +16,7 @@
 <script lang="ts">
   import { computed, defineComponent } from 'vue'
   import {useStore} from '@/store'
+import { ADD_PROJECT, EDIT_PROJECT } from '@/store/mutations_type'
   export default defineComponent({
     name: 'ProjectsForm',
     props: {
@@ -37,12 +38,12 @@
     methods: {
       save() {
         if(this.id) {
-          this.store.commit('EDIT_PROJECT', {
+          this.store.commit(EDIT_PROJECT, {
             id: this.id,
             name: this.projectName
           })
         } else {
-          this.store.commit('ADD_PROJECT', this.projectName)
+          this.store.commit(ADD_PROJECT, this.projectName)
         }
 
         this.projectName = ''
@@ -57,8 +58,3 @@
     }
   })
 </script>
-<style scoped>
-  .projects {
-    padding: 1.25rem;
-  }
-</style>
