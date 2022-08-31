@@ -1,5 +1,5 @@
 <template>
-      <TaskForm @OnSaveTask="saveTask" />
+      <TaskForm />
       <!-- Task list -->
       <div class="list">
         <TaskBox v-if="withoutTasks">
@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import TaskForm from '../components/TaskForm.vue'
 import TaskItem from '../components/TaskItem.vue'
 import TaskBox from '../components/TaskBox.vue'
-import ITaskItem from '../interfaces/ITaskItem'
+import { useStore } from '@/store';
 
 export default defineComponent({
     name: "TasksView",
@@ -24,20 +24,16 @@ export default defineComponent({
     TaskItem,
     TaskBox
   },
-  data() {
-    return {
-      tasks: [] as ITaskItem[],
-    }
-  },
   computed: {
     withoutTasks(): boolean {
       return this.tasks.length === 0
     }
   },
-  methods: {
-    saveTask(task: ITaskItem): void {
-      this.tasks.push(task)
-    },
+  setup() {
+    const store = useStore()
+    return {
+      tasks: computed(()=> store.state.tasks)
+    }
   }
 });
 </script>

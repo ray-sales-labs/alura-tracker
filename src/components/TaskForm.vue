@@ -28,13 +28,13 @@
 
 <script lang="ts">
   import { key } from '@/store'
+import { ADD_TASK } from '@/store/mutations_type'
 import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
   import TaskTimer from './TaskTimer.vue'
 
   export default defineComponent({
     name: 'TaskForm',
-    emits: ['OnSaveTask'],
     components: {
       TaskTimer
     },
@@ -46,17 +46,19 @@ import { useStore } from 'vuex'
     },
     methods: {
       finishTask(elapsedTime: number) : void {
-        this.$emit('OnSaveTask', {
+        this.store.commit(ADD_TASK, {
           secondsDuration: elapsedTime,
           description: this.description,
           project: this.projects.find(project => project.id == this.projectID)
         })
+
         this.description = ''
       }
     },
     setup() {
       const store = useStore(key)
       return {
+        store,
         projects: computed(() => store.state.projects)
       }
     }
