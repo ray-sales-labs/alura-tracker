@@ -7,7 +7,6 @@
         </TaskBox>
         <TaskItem v-for="(task, index) in tasks" :key="index" :task="task"/>
       </div>
->
 </template>
 
 <script lang="ts">
