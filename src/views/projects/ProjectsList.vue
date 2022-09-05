@@ -1,6 +1,5 @@
 <template>
   <section class="projects">
-    <h1 class="title">Projects</h1>
     <router-link to="/projects/new" class="button mb-5">
       <span class="icon is-small">
         <i class="fas fa-plus">

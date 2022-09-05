@@ -14,9 +14,11 @@
   </section>
 </template>
 <script lang="ts">
-  import { computed, defineComponent } from 'vue'
-  import {useStore} from '@/store'
+import { defineComponent } from 'vue'
+import {useStore} from '@/store'
 import { ADD_PROJECT, EDIT_PROJECT } from '@/store/mutations_type'
+import { NotificationType } from '@/interfaces/INotification'
+import useNotifier from '@/hooks/notifier'
   export default defineComponent({
     name: 'ProjectsForm',
     props: {
@@ -45,15 +47,19 @@ import { ADD_PROJECT, EDIT_PROJECT } from '@/store/mutations_type'
         } else {
           this.store.commit(ADD_PROJECT, this.projectName)
         }
-
+        
         this.projectName = ''
+        this.notify(NotificationType.SUCCESS, 'Excelente', 'O projeto foi cadastrado com sucesso!')
         this.$router.push('/projects')
-      }
+      },
+
     },
     setup() {
       const store = useStore()
+      const { notify } = useNotifier()
       return {
-        store      
+        store,
+        notify   
       }
     }
   })
