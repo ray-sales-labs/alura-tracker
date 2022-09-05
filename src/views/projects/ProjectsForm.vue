@@ -17,8 +17,8 @@
 import { defineComponent } from 'vue'
 import {useStore} from '@/store'
 import { ADD_PROJECT, EDIT_PROJECT } from '@/store/mutations_type'
-import { notifierMixin } from '@/mixins/notifier'
 import { NotificationType } from '@/interfaces/INotification'
+import useNotifier from '@/hooks/notifier'
   export default defineComponent({
     name: 'ProjectsForm',
     props: {
@@ -26,9 +26,6 @@ import { NotificationType } from '@/interfaces/INotification'
         type: String
       }
     },
-    mixins: [
-      notifierMixin,
-    ],
     data(){
       return {
         projectName: '',
@@ -59,8 +56,10 @@ import { NotificationType } from '@/interfaces/INotification'
     },
     setup() {
       const store = useStore()
+      const { notify } = useNotifier()
       return {
-        store      
+        store,
+        notify   
       }
     }
   })
