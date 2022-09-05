@@ -14,9 +14,10 @@
   </section>
 </template>
 <script lang="ts">
-  import { computed, defineComponent } from 'vue'
-  import {useStore} from '@/store'
-import { ADD_NOTIFICATION, ADD_PROJECT, EDIT_PROJECT } from '@/store/mutations_type'
+import { defineComponent } from 'vue'
+import {useStore} from '@/store'
+import { ADD_PROJECT, EDIT_PROJECT } from '@/store/mutations_type'
+import { notifierMixin } from '@/mixins/notifier'
 import { NotificationType } from '@/interfaces/INotification'
   export default defineComponent({
     name: 'ProjectsForm',
@@ -25,6 +26,9 @@ import { NotificationType } from '@/interfaces/INotification'
         type: String
       }
     },
+    mixins: [
+      notifierMixin,
+    ],
     data(){
       return {
         projectName: '',
@@ -48,13 +52,10 @@ import { NotificationType } from '@/interfaces/INotification'
         }
         
         this.projectName = ''
-        this.store.commit(ADD_NOTIFICATION, {
-          title: 'Novo Projeto foi salvo',
-          text: 'Prontinho :) seu projeto já está disponível.',
-          type: NotificationType.SUCCESS
-        })
+        this.notify(NotificationType.SUCCESS, 'Excelente', 'O projeto foi cadastrado com sucesso!')
         this.$router.push('/projects')
-      }
+      },
+
     },
     setup() {
       const store = useStore()
