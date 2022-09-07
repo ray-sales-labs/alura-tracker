@@ -28,11 +28,12 @@
 
 <script lang="ts">
 import { key } from '@/store'
-import { ADD_NOTIFICATION, ADD_TASK } from '@/store/mutations_type'
+import { ADD_NOTIFICATION } from '@/store/mutations_type'
 import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import TaskTimer from './TaskTimer.vue'
 import { NotificationType } from '@/interfaces/INotification'
+import { ADD_TASK } from '@/store/actions_type'
 
   export default defineComponent({
     name: 'TaskForm',
@@ -47,9 +48,8 @@ import { NotificationType } from '@/interfaces/INotification'
     },
     methods: {
       finishTask(elapsedTime: number) : void {
-        const project = this.projects.find(project => project.id == this.projectID)
         
-        if(!project) {
+        if(!this.projectID) {
           this.store.commit(ADD_NOTIFICATION, {
             title: 'Erro ao finalizar tarefa',
             text: 'A tarefa atual não possui um projeto vinculado.',
@@ -57,13 +57,21 @@ import { NotificationType } from '@/interfaces/INotification'
           })
           return
         }
-          this.store.commit(ADD_TASK, {
+        const project = this.projects.find(project => project.id == this.projectID)
+
+          this.store.dispatch(ADD_TASK, {
             secondsDuration: elapsedTime,
             description: this.description,
             project: project
+          }).then(() => {
+            this.store.commit(ADD_NOTIFICATION, {
+              title: 'Sucesso!',
+              text: 'Sua tarefa foi registrada',
+              type: NotificationType.SUCCESS
+            })
+            this.description = ''
           })
   
-          this.description = ''
       }
     },
     setup() {

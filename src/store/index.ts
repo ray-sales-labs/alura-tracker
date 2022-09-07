@@ -3,8 +3,16 @@ import IProjectItem from "@/interfaces/IProjectItem";
 import ITaskItem from "@/interfaces/ITaskItem";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
-import { ADD_NOTIFICATION, ADD_PROJECT, ADD_TASK, DELETE_PROJECT, DELETE_TASK, EDIT_PROJECT, UPDATE_TASK } from "./mutations_type";
-
+import { ADD_NOTIFICATION, DEFINE_PROJECTS, REMOVE_PROJECT, DEFINE_TASKS } from "./mutations_type";
+import { 
+  GET_PROJECTS, 
+  ADD_PROJECT, 
+  DELETE_PROJECT, 
+  EDIT_PROJECT, 
+  GET_TASKS,
+  ADD_TASK
+} from "./actions_type";
+import http from '@/http'
 interface State {
   projects: IProjectItem[],
   tasks: ITaskItem[],
@@ -20,33 +28,14 @@ export const store = createStore<State>({
     notifications: [],
   },
   mutations: {
-    [ADD_PROJECT](state, projectName: string) {
-      
-      const project = {
-        id: new Date().toISOString(),
-        name: projectName
-      } as IProjectItem
-
-      state.projects.push(project)
-    },
-    [EDIT_PROJECT](state, project: IProjectItem) {
-      const index = state.projects.findIndex(item => item.id == project.id)
-      console.log(index)
-      state.projects[index] = project
-    },
-    [DELETE_PROJECT](state, id: string) {
+    [REMOVE_PROJECT](state, id: string) {
       state.projects = state.projects.filter(item => item.id != id)
     },
-    [ADD_TASK](state, task: ITaskItem) {
-      task.id = new Date().toISOString()
-      state.tasks.push(task)
+    [DEFINE_PROJECTS](state, projects: IProjectItem[]) {
+      state.projects = projects
     },
-    [DELETE_TASK](state, id: string) {
-      state.tasks = state.tasks.filter(task => task.id != id)
-    },
-    [UPDATE_TASK](state, task: ITaskItem) {
-      const index = state.tasks.findIndex(item => item.id == task.id)
-      state.tasks[index] = task
+    [DEFINE_TASKS](state, tasks: ITaskItem[]) {
+      state.tasks = tasks
     },
     [ADD_NOTIFICATION](state, newNotification:INotification) {
       newNotification.id = new Date().getTime()
@@ -56,6 +45,30 @@ export const store = createStore<State>({
         state.notifications = state.notifications.filter(notification => notification.id != newNotification.id)
       }, 3000)
     }
+  },
+  actions: {
+    [GET_PROJECTS]({ commit }) {
+      http.get('projects')
+        .then(result => commit(DEFINE_PROJECTS, result.data))
+    },
+    [ADD_PROJECT](context, projectName: string) {
+      return http.post('projects', {
+        name: projectName
+      })
+    },
+    [EDIT_PROJECT](context, project: IProjectItem) {
+      return http.put(`projects/${project.id}`, project)
+    },
+    [DELETE_PROJECT]({ commit }, projectId: string) {
+      return http.delete(`projects/${projectId}`).then(() => commit(DELETE_PROJECT, projectId))
+    },
+    [GET_TASKS]({ commit }) {
+      http.get('tasks')
+        .then(result => commit(DEFINE_TASKS, result.data))
+    },
+    [ADD_TASK](context, task: ITaskItem) {
+      return http.post('tasks', task)
+    },
   },
 })
 
