@@ -3,7 +3,7 @@ import IProjectItem from "@/interfaces/IProjectItem";
 import ITaskItem from "@/interfaces/ITaskItem";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
-import { ADD_NOTIFICATION, DEFINE_PROJECTS, REMOVE_PROJECT, DEFINE_TASKS } from "./mutations_type";
+import { ADD_NOTIFICATION, DEFINE_PROJECTS, REMOVE_PROJECT, DEFINE_TASKS, PUSH_TASK } from "./mutations_type";
 import { 
   GET_PROJECTS, 
   ADD_PROJECT, 
@@ -37,6 +37,9 @@ export const store = createStore<State>({
     [DEFINE_TASKS](state, tasks: ITaskItem[]) {
       state.tasks = tasks
     },
+    [PUSH_TASK](state, task: ITaskItem) {
+      state.tasks.push(task)
+    },
     [ADD_NOTIFICATION](state, newNotification:INotification) {
       newNotification.id = new Date().getTime()
       state.notifications.push(newNotification)
@@ -60,14 +63,15 @@ export const store = createStore<State>({
       return http.put(`projects/${project.id}`, project)
     },
     [DELETE_PROJECT]({ commit }, projectId: string) {
-      return http.delete(`projects/${projectId}`).then(() => commit(DELETE_PROJECT, projectId))
+      return http.delete(`projects/${projectId}`).then(() => commit(REMOVE_PROJECT, projectId))
     },
     [GET_TASKS]({ commit }) {
       http.get('tasks')
         .then(result => commit(DEFINE_TASKS, result.data))
     },
-    [ADD_TASK](context, task: ITaskItem) {
+    [ADD_TASK]({ commit }, task: ITaskItem) {
       return http.post('tasks', task)
+        .then(res => commit(PUSH_TASK, res.data))
     },
   },
 })
