@@ -48,19 +48,20 @@
   </section>
 </template>
 <script lang="ts">
-  import { computed, defineComponent } from 'vue'
-  import {useStore} from '@/store'
-  import { DELETE_PROJECT } from '@/store/mutations_type'
+import { computed, defineComponent } from 'vue'
+import {useStore} from '@/store'
+import { GET_PROJECTS, DELETE_PROJECT } from '@/store/actions_type'
   
   export default defineComponent({
     name: 'ProjectsList',
     methods: {
       deleteItem(id: string) {
-        this.store.commit(DELETE_PROJECT, id)
+        this.store.dispatch(DELETE_PROJECT, id)
       }
     },
     setup() {
       const store = useStore()
+      store.dispatch(GET_PROJECTS)
       return {
         store,
         projects: computed(() => store.state.projects)

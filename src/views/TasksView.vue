@@ -15,6 +15,7 @@ import TaskForm from '../components/TaskForm.vue'
 import TaskItem from '../components/TaskItem.vue'
 import TaskBox from '../components/TaskBox.vue'
 import { useStore } from '@/store';
+import { GET_TASKS } from '@/store/actions_type';
 
 export default defineComponent({
     name: "TasksView",
@@ -30,6 +31,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
+    store.dispatch(GET_TASKS)
     return {
       tasks: computed(()=> store.state.tasks)
     }

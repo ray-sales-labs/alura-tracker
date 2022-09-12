@@ -16,9 +16,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import {useStore} from '@/store'
-import { ADD_PROJECT, EDIT_PROJECT } from '@/store/mutations_type'
 import { NotificationType } from '@/interfaces/INotification'
 import useNotifier from '@/hooks/notifier'
+import { ADD_PROJECT, EDIT_PROJECT } from '@/store/actions_type'
   export default defineComponent({
     name: 'ProjectsForm',
     props: {
@@ -40,18 +40,21 @@ import useNotifier from '@/hooks/notifier'
     methods: {
       save() {
         if(this.id) {
-          this.store.commit(EDIT_PROJECT, {
+          this.store.dispatch(EDIT_PROJECT, {
             id: this.id,
             name: this.projectName
-          })
+          }).then(() => this.onSuccess())
         } else {
-          this.store.commit(ADD_PROJECT, this.projectName)
+          this.store.dispatch(ADD_PROJECT, this.projectName)
+            .then(() => this.onSuccess())
         }
         
+      },
+      onSuccess() {
         this.projectName = ''
         this.notify(NotificationType.SUCCESS, 'Excelente', 'O projeto foi cadastrado com sucesso!')
         this.$router.push('/projects')
-      },
+      }
 
     },
     setup() {
