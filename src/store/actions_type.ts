@@ -5,3 +5,4 @@ export const ADD_PROJECT = "ADD_PROJECT"
 
 export const GET_TASKS = "GET_TASKS"
 export const ADD_TASK = "ADD_TASK"
+export const EDIT_TASK = "PUT_TASK"

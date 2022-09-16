@@ -3,14 +3,15 @@ import IProjectItem from "@/interfaces/IProjectItem";
 import ITaskItem from "@/interfaces/ITaskItem";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
-import { ADD_NOTIFICATION, DEFINE_PROJECTS, REMOVE_PROJECT, DEFINE_TASKS, PUSH_TASK } from "./mutations_type";
+import { ADD_NOTIFICATION, DEFINE_PROJECTS, REMOVE_PROJECT, DEFINE_TASKS, PUSH_TASK, UPDATE_TASK } from "./mutations_type";
 import { 
   GET_PROJECTS, 
   ADD_PROJECT, 
   DELETE_PROJECT, 
   EDIT_PROJECT, 
   GET_TASKS,
-  ADD_TASK
+  ADD_TASK,
+  EDIT_TASK
 } from "./actions_type";
 import http from '@/http'
 interface State {
@@ -36,6 +37,11 @@ export const store = createStore<State>({
     },
     [DEFINE_TASKS](state, tasks: ITaskItem[]) {
       state.tasks = tasks
+    },
+    [UPDATE_TASK](state, task: ITaskItem) {
+      const index = state.tasks.findIndex(t => t.id == task.id)
+      state.tasks[index] = task
+
     },
     [PUSH_TASK](state, task: ITaskItem) {
       state.tasks.push(task)
@@ -72,6 +78,10 @@ export const store = createStore<State>({
     [ADD_TASK]({ commit }, task: ITaskItem) {
       return http.post('tasks', task)
         .then(res => commit(PUSH_TASK, res.data))
+    },
+    [EDIT_TASK]({ commit }, task: ITaskItem) {
+      return http.put(`tasks/${task.id}`, task)
+        .then(res => commit(UPDATE_TASK, task))
     },
   },
 })

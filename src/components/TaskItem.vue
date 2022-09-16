@@ -1,6 +1,6 @@
 <template>
  <TaskBox>
-  <div class="columns">
+  <div class="columns pointer" @click="selectTask">
     <div class="column is-4">
       {{ task.description || 'Task without description' }}
     </div>
@@ -25,15 +25,25 @@
       StopWatch,
       TaskBox
     },
+    emits: [
+      'selectTask'
+    ],
     props: {
       task: {
         type: Object as PropType<ITaskItem>,
         required: true
+      }
+    },
+    methods: {
+      selectTask(): void {
+        this.$emit('selectTask', this.task)
       }
     }
   })
 </script>
 
 <style scoped>
-
+  .pointer {
+    cursor: pointer;
+  }
 </style>
