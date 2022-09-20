@@ -1,51 +1,29 @@
 import { INotification } from "@/interfaces/INotification";
-import IProjectItem from "@/interfaces/IProjectItem";
 import ITaskItem from "@/interfaces/ITaskItem";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
-import { ADD_NOTIFICATION, DEFINE_PROJECTS, REMOVE_PROJECT, DEFINE_TASKS, PUSH_TASK, UPDATE_TASK } from "./mutations_type";
-import { 
-  GET_PROJECTS, 
-  ADD_PROJECT, 
-  DELETE_PROJECT, 
-  EDIT_PROJECT, 
-  GET_TASKS,
-  ADD_TASK,
-  EDIT_TASK
-} from "./actions_type";
-import http from '@/http'
-interface State {
-  projects: IProjectItem[],
-  tasks: ITaskItem[],
-  notifications: INotification[]
+import { ADD_NOTIFICATION } from "./mutations_type";
+import { ProjectState, project } from "./modules/Project";
+import { TaskState, task } from "./modules/Task";
+export interface State {
+  tasks: TaskState,
+  notifications: INotification[],
+  project: ProjectState
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore<State>({
   state: {
-    projects: [],
-    tasks: [],
     notifications: [],
+    project: {
+      projects: []
+    },
+    task: {
+      tasks: []
+    }
   },
   mutations: {
-    [REMOVE_PROJECT](state, id: string) {
-      state.projects = state.projects.filter(item => item.id != id)
-    },
-    [DEFINE_PROJECTS](state, projects: IProjectItem[]) {
-      state.projects = projects
-    },
-    [DEFINE_TASKS](state, tasks: ITaskItem[]) {
-      state.tasks = tasks
-    },
-    [UPDATE_TASK](state, task: ITaskItem) {
-      const index = state.tasks.findIndex(t => t.id == task.id)
-      state.tasks[index] = task
-
-    },
-    [PUSH_TASK](state, task: ITaskItem) {
-      state.tasks.push(task)
-    },
     [ADD_NOTIFICATION](state, newNotification:INotification) {
       newNotification.id = new Date().getTime()
       state.notifications.push(newNotification)
@@ -56,34 +34,12 @@ export const store = createStore<State>({
     }
   },
   actions: {
-    [GET_PROJECTS]({ commit }) {
-      http.get('projects')
-        .then(result => commit(DEFINE_PROJECTS, result.data))
-    },
-    [ADD_PROJECT](context, projectName: string) {
-      return http.post('projects', {
-        name: projectName
-      })
-    },
-    [EDIT_PROJECT](context, project: IProjectItem) {
-      return http.put(`projects/${project.id}`, project)
-    },
-    [DELETE_PROJECT]({ commit }, projectId: string) {
-      return http.delete(`projects/${projectId}`).then(() => commit(REMOVE_PROJECT, projectId))
-    },
-    [GET_TASKS]({ commit }) {
-      http.get('tasks')
-        .then(result => commit(DEFINE_TASKS, result.data))
-    },
-    [ADD_TASK]({ commit }, task: ITaskItem) {
-      return http.post('tasks', task)
-        .then(res => commit(PUSH_TASK, res.data))
-    },
-    [EDIT_TASK]({ commit }, task: ITaskItem) {
-      return http.put(`tasks/${task.id}`, task)
-        .then(res => commit(UPDATE_TASK, task))
-    },
+    
   },
+  modules: {
+    project,
+    task,
+  }
 })
 
 export function useStore(): Store<State> {

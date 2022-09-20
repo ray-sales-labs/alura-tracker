@@ -78,7 +78,7 @@ import { ADD_TASK } from '@/store/actions_type'
       const store = useStore(key)
       return {
         store,
-        projects: computed(() => store.state.projects)
+        projects: computed(() => store.state.project.projects)
       }
     }
   })

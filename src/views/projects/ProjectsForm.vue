@@ -33,7 +33,7 @@ import { ADD_PROJECT, EDIT_PROJECT } from '@/store/actions_type'
     },
     mounted() {
       if(this.id) {
-        const project = this.store.state.projects.find(project => project.id == this.id)
+        const project = this.store.state.project.projects.find(project => project.id == this.id)
         this.projectName = project?.name || ''
       }
     },
