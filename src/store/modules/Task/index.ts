@@ -29,8 +29,10 @@ export const task: Module<TaskState, State> = {
     },
   },
   actions: {
-    [GET_TASKS]({ commit }) {
-      http.get('tasks')
+    [GET_TASKS]({ commit }, filter: string) {
+      const url = filter ? `tasks?description=${filter}` : 'tasks'
+      
+      http.get(url)
         .then(result => commit(DEFINE_TASKS, result.data))
     },
     [ADD_TASK]({ commit }, task: ITaskItem) {
