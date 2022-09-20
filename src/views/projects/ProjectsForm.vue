@@ -14,11 +14,12 @@
   </section>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import {useStore} from '@/store'
 import { NotificationType } from '@/interfaces/INotification'
 import useNotifier from '@/hooks/notifier'
 import { ADD_PROJECT, EDIT_PROJECT } from '@/store/actions_type'
+import { useRouter } from 'vue-router'
   export default defineComponent({
     name: 'ProjectsForm',
     props: {
@@ -26,43 +27,40 @@ import { ADD_PROJECT, EDIT_PROJECT } from '@/store/actions_type'
         type: String
       }
     },
-    data(){
-      return {
-        projectName: '',
-      }
-    },
-    mounted() {
-      if(this.id) {
-        const project = this.store.state.project.projects.find(project => project.id == this.id)
-        this.projectName = project?.name || ''
-      }
-    },
-    methods: {
-      save() {
-        if(this.id) {
-          this.store.dispatch(EDIT_PROJECT, {
-            id: this.id,
-            name: this.projectName
-          }).then(() => this.onSuccess())
-        } else {
-          this.store.dispatch(ADD_PROJECT, this.projectName)
-            .then(() => this.onSuccess())
-        }
-        
-      },
-      onSuccess() {
-        this.projectName = ''
-        this.notify(NotificationType.SUCCESS, 'Excelente', 'O projeto foi cadastrado com sucesso!')
-        this.$router.push('/projects')
+    setup(props) {
+      const store = useStore()
+      const router = useRouter()
+      const { notify } = useNotifier()
+      const projectName = ref('')
+
+      if (props.id) {
+        const project = store.state.project.projects.find(project => project.id == props.id)
+        projectName.value = project?.name || ''  
       }
 
-    },
-    setup() {
-      const store = useStore()
-      const { notify } = useNotifier()
+      const save = () => {
+        if(props.id) {
+          store.dispatch(EDIT_PROJECT, {
+            id: props.id,
+            name: projectName.value
+          }).then(() => onSuccess())
+        } else {
+          store.dispatch(ADD_PROJECT, projectName.value)
+            .then(() => onSuccess())
+        }
+        
+      }
+
+      const onSuccess = () => {
+        projectName.value = ''
+        notify(NotificationType.SUCCESS, 'Excelente', 'O projeto foi cadastrado com sucesso!')
+        router.push('/projects')
+      }
+
       return {
-        store,
-        notify   
+        projectName,
+        save,
+        onSuccess
       }
     }
   })

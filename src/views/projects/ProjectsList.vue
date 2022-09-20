@@ -64,7 +64,7 @@ import { GET_PROJECTS, DELETE_PROJECT } from '@/store/actions_type'
       store.dispatch(GET_PROJECTS)
       return {
         store,
-        projects: computed(() => store.state.projects)
+        projects: computed(() => store.state.project.projects)
       }
     }
   })

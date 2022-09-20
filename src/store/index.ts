@@ -1,12 +1,11 @@
 import { INotification } from "@/interfaces/INotification";
-import ITaskItem from "@/interfaces/ITaskItem";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
 import { ADD_NOTIFICATION } from "./mutations_type";
 import { ProjectState, project } from "./modules/Project";
 import { TaskState, task } from "./modules/Task";
 export interface State {
-  tasks: TaskState,
+  task: TaskState,
   notifications: INotification[],
   project: ProjectState
 }

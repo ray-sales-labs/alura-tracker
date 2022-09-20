@@ -34,9 +34,14 @@
         required: true
       }
     },
-    methods: {
-      selectTask(): void {
-        this.$emit('selectTask', this.task)
+    setup(props, { emit }) {
+      
+      const selectTask = (): void => {
+        emit('selectTask', props.task)
+      }
+
+      return {
+        selectTask
       }
     }
   })

@@ -29,7 +29,7 @@
 <script lang="ts">
 import { key } from '@/store'
 import { ADD_NOTIFICATION } from '@/store/mutations_type'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import TaskTimer from './TaskTimer.vue'
 import { NotificationType } from '@/interfaces/INotification'
@@ -40,45 +40,45 @@ import { ADD_TASK } from '@/store/actions_type'
     components: {
       TaskTimer
     },
-    data () {
-      return {
-        description: '',
-        projectID: '',
-      }
-    },
-    methods: {
-      finishTask(elapsedTime: number) : void {
+
+    setup() {
+      const store = useStore(key)
+      const description = ref('')
+      const projectID = ref('')
+      const projects = computed(() => store.state.project.projects)
+
+      const finishTask = (elapsedTime: number) : void => {
         
-        if(!this.projectID) {
-          this.store.commit(ADD_NOTIFICATION, {
+        if(!projectID.value) {
+          store.commit(ADD_NOTIFICATION, {
             title: 'Erro ao finalizar tarefa',
             text: 'A tarefa atual não possui um projeto vinculado.',
             type: NotificationType.DANGER
           })
           return
         }
-        const project = this.projects.find(project => project.id == this.projectID)
+        const project = projects.value.find(project => project.id == projectID.value)
 
-          this.store.dispatch(ADD_TASK, {
+          store.dispatch(ADD_TASK, {
             secondsDuration: elapsedTime,
-            description: this.description,
+            description: description,
             project: project
           }).then(() => {
-            this.store.commit(ADD_NOTIFICATION, {
+            store.commit(ADD_NOTIFICATION, {
               title: 'Sucesso!',
               text: 'Sua tarefa foi registrada',
               type: NotificationType.SUCCESS
             })
-            this.description = ''
+            description.value = ''
           })
   
       }
-    },
-    setup() {
-      const store = useStore(key)
+      
       return {
-        store,
-        projects: computed(() => store.state.project.projects)
+        projectID,
+        description,
+        projects,
+        finishTask
       }
     }
   })
